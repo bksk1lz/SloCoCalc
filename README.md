@@ -7,4 +7,6 @@ You'll need all the results files from your race series in a single folder. If y
 
 Run ScoreCalculator.py and follow prompts. The "number of races to count" is how many races will contribute to each racer's point total, ie you want to take the best 8 of 12 races so enter 8 there.
 
+Results are saved in `output.csv` in the same folder as your data.
+
 # More coming soon!
