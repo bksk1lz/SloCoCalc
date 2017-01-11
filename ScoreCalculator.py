@@ -40,8 +40,7 @@ for i, md in enumerate(mdsList):
                                               if isinstance(v, int)],
                                              reverse=True)[0]
 
-racenumlist.append('best')
-racenumlist.append('SloCo')
+racenumlist[1:1] = ['best', 'SloCo']
 
 [allnames, allslocos] = slocos.get_slocos(filelist)
 
@@ -75,10 +74,14 @@ for entry in namelistw:
 outfile = open(userpath + "output.csv", "w")
 w = csv.DictWriter(outfile, fieldnames=racenumlist,
                    restval=0, extrasaction='ignore', dialect='excel')
+x = csv.writer(outfile)
 
+x.writerow(['Men\'s results'])
 w.writeheader()
-for entry in namelistm:
+for entry in sorted(namelistm, key=itemgetter('best'), reverse=True):
     w.writerow(entry)
-for entry in namelistw:
+x.writerow(['Women\'s results'])
+w.writeheader()
+for entry in sorted(namelistw, key=itemgetter('best'), reverse=True):
     w.writerow(entry)
 outfile.close()
