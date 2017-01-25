@@ -10,12 +10,22 @@ import points
 import slocos
 
 userpath = input('Enter path to results files: ')
-filelist = [userpath + file for file in os.listdir(userpath)
-            if file.endswith('.xml')]
+filelist = sorted([userpath + file for file in os.listdir(userpath)
+                   if file.endswith('.xml')])
+
 
 SeasonSize = int(input('Enter the number of races to count: '))
 
-[namelistm, namelistw, racenumlist] = points.get_points(userpath, filelist)
+women = open(userpath + '/women.txt', 'r')
+womenlist = women.read().split('\n')
+women.close()
+
+[rposlistlist, racenumlist] = points.get_positions(filelist)
+
+[rpll_men, rpll_women] = points.men_women(womenlist, rposlistlist)
+
+namelistm = points.get_points(rpll_men)
+namelistw = points.get_points(rpll_women)
 
 namelistm.pop(0)
 namelistw.pop(0)
@@ -41,18 +51,20 @@ for i, md in enumerate(mdsList):
                                              reverse=True)[0]
 
 racenumlist[1:1] = ['best', 'SloCo']
+print(namelistm)
+print(racenumlist)
 
 [allnames, allslocos] = slocos.get_slocos(filelist)
 
-# Men's and women's dictionaries now full of everybody's names and points for each race
-# we need to get their best *SeasonSize* scores
+# Men's and women's dictionaries now full of everybody's names and points for
+# each race we need to get their best *SeasonSize* scores
 from operator import itemgetter
 
 for entry in namelistm:
     bestm = sorted([v for v in entry.values() if isinstance(v, int)],
                    reverse=True)[0:SeasonSize]
-    # sorts all dictionary values into a list. The text entry (person's name) is first
-    # the best *SeasonSize* points values are 1 - 12 in the list
+    # sorts all dictionary values into a list. The text entry (person's name)
+    # is first the best *SeasonSize* points values are 1 - 12 in the list
     entry['best'] = sum(bestm)
     # sum of the 11 best entries is added to each runners dictionary under the
     # entry "sumbest11"

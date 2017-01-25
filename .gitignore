@@ -1,4 +1,6 @@
 *.XML
+*.csv
+*.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -70,6 +72,7 @@ target/
 
 # IPython Notebook
 .ipynb_checkpoints
+*.ipynb
 
 # pyenv
 .python-version

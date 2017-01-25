@@ -1,6 +1,6 @@
 
 def get_sec(s):
-    '''Returns time in seconds for input, s, of form HH:MM:SS '''
+    '''Returns time in seconds for string input, s, of form HH:MM:SS '''
     l = s.split(':')
     if len(l) == 1:
         return int(l[0])
