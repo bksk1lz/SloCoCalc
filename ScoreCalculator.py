@@ -24,8 +24,9 @@ women.close()
 
 [rpll_men, rpll_women] = points.men_women(womenlist, rposlistlist)
 
-namelistm = points.get_points(rpll_men)
 namelistw = points.get_points(rpll_women)
+namelistm = points.get_points(rpll_men)
+
 
 namelistm.pop(0)
 namelistw.pop(0)
@@ -39,16 +40,22 @@ mds.close()
 for i, md in enumerate(mdsList):
     for dct in namelistm:
         if md in dct['name']:
-            dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
-                                              if isinstance(v, int)],
-                                             reverse=True)[0]
+            try:
+                dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
+                                                  if isinstance(v, int)],
+                                                 reverse=True)[0]
+            except:
+                pass
 
 for i, md in enumerate(mdsList):
     for dct in namelistw:
         if md in dct['name']:
-            dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
-                                              if isinstance(v, int)],
-                                             reverse=True)[0]
+            try:
+                dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
+                                                  if isinstance(v, int)],
+                                                 reverse=True)[0]
+            except:
+                pass
 
 racenumlist[1:1] = ['best', 'SloCo']
 print(namelistm)
