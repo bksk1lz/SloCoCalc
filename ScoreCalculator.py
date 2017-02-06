@@ -84,7 +84,10 @@ for entry in namelistw:
     bestw = sorted([v for v in entry.values() if isinstance(v, int)],
                    reverse=True)[0:SeasonSize]
     entry['best'] = sum(bestw)
-    entry['SloCo'] = allslocos[allnames.index(entry['name'])]
+    try:
+        entry['SloCo'] = allslocos[allnames.index(entry['name'])]
+    except ValueError:
+        entry['SloCo'] = 0
 
 
 # write output .csv file.
