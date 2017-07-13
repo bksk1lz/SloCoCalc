@@ -39,7 +39,7 @@ mds.close()
 
 for i, md in enumerate(mdsList):
     for dct in namelistm:
-        if md in dct['name']:
+        if md == dct['name']:
             try:
                 dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
                                                   if isinstance(v, int)],
@@ -49,7 +49,7 @@ for i, md in enumerate(mdsList):
 
 for i, md in enumerate(mdsList):
     for dct in namelistw:
-        if md in dct['name']:
+        if md == dct['name']:
             try:
                 dct[racenumlist[i + 1]] = sorted([v for v in dct.values()
                                                   if isinstance(v, int)],
