@@ -11,11 +11,7 @@ def get_positions(filelist):
     |-rposlist (for race 2)
     |-etc.
 
-    filelist must contain all IOF XML v2 files
-
-    Planned updates:
-    IOF XML v3 compatibility
-    Record time into runner dicts for sloco calculation
+    filelist can contain IOF v2 or v3 XML files
 
     '''
     # Go through results files and get everyone's result position from
@@ -26,8 +22,14 @@ def get_positions(filelist):
 
     # Load each file and make string for the race number
     for i, file in enumerate(filelist):
-        tree = ET.parse(file)
-        root = tree.getroot()
+        
+        # Read file and remove namespaces if they exist (IOF XML v3)
+        it = ET.iterparse(file)
+        for _, el in it:
+            if '}' in el.tag:
+                el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
+        root = it.root
+        
         racenumstr = "race" + str(i + 1)
         # builds a list of strings corresponding to the sequence of races
         racenumlist.append(racenumstr)
@@ -48,10 +50,14 @@ def get_positions(filelist):
                 for Family in PersonResult.iter("Family"):
                     namestr = namestr + Family.text
 
-                # Write resultposition to rpos
+                # Record rpos to determine if runner MP
+                # IOF XML v2 stores it in ResultPosition,
+                # IOF XML v3 stores it in Position
                 for ResultPosition in PersonResult.iter("ResultPosition"):
                     rpos = ResultPosition.text
-
+                for ResultPosition in PersonResult.iter("Position"):
+                    rpos = ResultPosition.text
+                    
                 rposlist.append({'name': namestr, 'rpos': rpos,
                                  'racenum': racenumstr})
 

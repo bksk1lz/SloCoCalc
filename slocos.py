@@ -1,6 +1,9 @@
 
 def get_sec(s):
-    '''Returns time in seconds for string input, s, of form HH:MM:SS '''
+    '''
+    Returns time in seconds for string input, s, of form HH:MM:SS.
+    if s has no colons, just returns int(s)
+    '''
     l = s.split(':')
     if len(l) == 1:
         return int(l[0])
@@ -22,8 +25,14 @@ def get_slocos(filelist):
 
     # Load each file and make string for the race number
     for i, file in enumerate(filelist):
-        tree = ET.parse(file)
-        root = tree.getroot()
+        
+        # Read file and remove namespaces if they exist (IOF XML v3)
+        it = ET.iterparse(file)
+        for _, el in it:
+            if '}' in el.tag:
+                el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
+        root = it.root
+        
         racenumstr = "race" + str(i + 1)
         # builds a list of strings corresponding to the sequence of races
         racenumlist.append(racenumstr)
@@ -33,9 +42,15 @@ def get_slocos(filelist):
         for ClassResult in root.find("ClassResult"):
             # Now we're in a loop iterating through the person results
             for PersonResult in ClassResult.iter("PersonResult"):
-
+            
+                # Record rpos to determine if runner MP
+                # IOF XML v2 stores it in ResultPosition,
+                # IOF XML v3 stores it in Position
                 for ResultPosition in PersonResult.iter('ResultPosition'):
                     rpos = ResultPosition.text
+                
+                for ResultPosition in PersonResult.iter('Position'):
+                    rpos = ResultPosition.text                   
 
                 if rpos is None:
                     break
@@ -53,6 +68,7 @@ def get_slocos(filelist):
                 for Time in PersonResult.findall("./Result/Time"):
                     timestr = Time.text
                     timeval = get_sec(timestr)
+                    print(timestr, file)
                     break
 
                 for entry in namelist:

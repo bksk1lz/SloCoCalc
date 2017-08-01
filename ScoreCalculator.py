@@ -58,8 +58,8 @@ for i, md in enumerate(mdsList):
                 pass
 
 racenumlist[1:1] = ['best', 'SloCo']
-print(namelistm)
-print(racenumlist)
+#print(namelistm)
+#print(racenumlist)
 
 [allnames, allslocos] = slocos.get_slocos(filelist)
 
@@ -78,7 +78,7 @@ for entry in namelistm:
     try:
         entry['SloCo'] = allslocos[allnames.index(entry['name'])]
     except ValueError:
-        entry['SloCo'] = 0
+        entry['SloCo'] = 10
 # Now do the same thing for women's
 for entry in namelistw:
     bestw = sorted([v for v in entry.values() if isinstance(v, int)],
@@ -87,7 +87,7 @@ for entry in namelistw:
     try:
         entry['SloCo'] = allslocos[allnames.index(entry['name'])]
     except ValueError:
-        entry['SloCo'] = 0
+        entry['SloCo'] = 10
 
 
 # write output .csv file.
