@@ -1,4 +1,62 @@
+import xml.etree.ElementTree as ET
+
+def stripNamespace(filename):
+    '''
+    Returns ET root from from filename with namespace removed'''
+    it = ET.iterparse(filename)
+    for _, el in it:
+        if '}' in el.tag:
+            el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
+    return it.root
+
+def getrposlist(race, racenum):
+    '''
+    Returns list of dicts containing runner name and position
+    race is an ClassResult element from IOF results file'''
+    rposlist = []
+    rpos = None
+    for i, person in enumerate(race.iter('PersonResult')):
+        try:
+            name = person.find('Person/Name/Given').text + ' '
+            name += person.find('Person/Name/Family').text.split()[0]
+            if person.find('Result/Position') is not None:
+                rpos = i + 1
+            rposlist.append({'name': name, 'rpos': rpos, 'racenum': racenum})
+        except:
+            name = "mud"
+        rpos = None
+    return rposlist
+
 def get_positions(filelist):
+    '''
+    Reads a list of IOF XML results files (filelist) and records the
+    results into rposlistlist:
+
+    rposlistslist
+    |-rposlist (for race 1)
+    | |-runner 1 - dict containing runner name, race, finish position
+    | |-runner 2 - "
+    | |-etc.
+    |-rposlist (for race 2)
+    |-etc.
+
+    filelist must contain only IOFv3 XML files
+
+    '''
+    rposlistlist = []
+    racenumlist = ['name']
+    for filename in filelist:
+        root = stripNamespace(filename)
+        event = filename.split('_')[1].split('.')[0]
+
+        for race in root.findall('./ClassResult'):
+            racename = race.find('Class/Name').text
+            racenum = event + ' ' + racename
+            racenumlist.append(racenum)
+            rposlistlist.append(getrposlist(race, racenum))
+    return rposlistlist, racenumlist
+
+def get_positions_old(filelist):
     '''
     Reads a list of IOF XML results files (filelist) and records the
     results into rposlistlist:
@@ -29,26 +87,33 @@ def get_positions(filelist):
             if '}' in el.tag:
                 el.tag = el.tag.split('}', 1)[1]  # strip all namespaces
         root = it.root
-        
         racenumstr = "race" + str(i + 1)
-        # builds a list of strings corresponding to the sequence of races
-        racenumlist.append(racenumstr)
 
         rposlist = []
 
         # take only the first class result in file. (sometimes there's a
         # reverse course or something at the end)
-        for ClassResult in root.find("ClassResult"):
+        for ClassResult in root.iter("ClassResult"):
             # Now we're in a loop iterating through the person results
+            for Class in ClassResult.iter("Class"):
+                racename = racenumstr + Class[0].text
+                racenumlist.append(racename)
+            
             for PersonResult in ClassResult.iter("PersonResult"):
                 namestr = ""
 
                 # Write the runners name to namestr
                 for Given in PersonResult.iter("Given"):
-                    namestr = namestr + Given.text + " "
+                    try:
+                        namestr = namestr + Given.text + " "
+                    except:
+                        break
 
                 for Family in PersonResult.iter("Family"):
-                    namestr = namestr + Family.text
+                    try:
+                        namestr = namestr + Family.text.split(' ')[0]
+                    except:
+                        break
 
                 # Record rpos to determine if runner MP
                 # IOF XML v2 stores it in ResultPosition,

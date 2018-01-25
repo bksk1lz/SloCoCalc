@@ -60,10 +60,16 @@ def get_slocos(filelist):
 
                 # Write the runners name to namestr
                 for Given in PersonResult.iter("Given"):
-                    namestr = namestr + Given.text + " "
+                    try:
+                        namestr = namestr + Given.text + " "
+                    except:
+                        break
 
                 for Family in PersonResult.iter("Family"):
-                    namestr = namestr + Family.text
+                    try:
+                        namestr = namestr + Family.text
+                    except:
+                        break
 
                 for Time in PersonResult.findall("./Result/Time"):
                     timestr = Time.text
