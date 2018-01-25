@@ -1,6 +1,6 @@
 # SloCoCalc
 Calculates series standings and handicaps for Orienteering races from IOF XML results files
-Compatible with IOF XML v2.0.3, working on v3.0
+Compatible with IOF XML v3.0, not with v2.03 at the moment
 
 # Instructions
 You'll need all the results files from your race series in a single folder. If you want to score men and women separately, create a file in the same folder named `women.txt` with one name per line (first and last) of each of the women. If you want to award bonues points to meet directors for the meet the direct, make a file named `MeetDirectors.txt` with one name per line (first and last) of the meet directors.
