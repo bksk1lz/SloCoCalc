@@ -18,6 +18,7 @@ SeasonSize = int(input('Enter the number of races to count: '))
 
 women = open(userpath + '/women.txt', 'r')
 womenlist = women.read().split('\n')
+womenlist = [womanName.upper() for womanName in womenlist]
 women.close()
 
 [rposlistlist, racenumlist] = points.get_positions(filelist)

@@ -21,7 +21,7 @@ def getrposlist(race, racenum):
             name += person.find('Person/Name/Family').text.split()[0]
             if person.find('Result/Position') is not None:
                 rpos = i + 1
-            rposlist.append({'name': name, 'rpos': rpos, 'racenum': racenum})
+            rposlist.append({'name': name.upper(), 'rpos': rpos, 'racenum': racenum})
         except:
             name = "mud"
         rpos = None
